@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import {
   Card,
   CardContent,
@@ -8,6 +9,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Copy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { getGmailsAction } from '@/actions'
 
 interface VerificationCode {
   id: string
@@ -81,6 +83,10 @@ export const VerificationCodeGrid = ({ email }: VerificationCodesGridProps) => {
     //   description: `Código de ${service} copiado al portapapeles`,
     // });
   }
+  const { data } = useQuery({
+    queryKey: ['gmails'],
+    queryFn: getGmailsAction,
+  })
 
   return (
     <section className='px-6 py-16'>
