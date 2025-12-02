@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router'
-import { loginAction } from '@/actions'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
+import { useAuthStore } from '@/auth/store/auth.store'
 
 export const LoginPages = () => {
   const navigate = useNavigate()
+  const { login } = useAuthStore()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     // Tu lógica de login aquí
@@ -15,16 +17,13 @@ export const LoginPages = () => {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
 
-    try {
-      const data = await loginAction(email, password)
-
-      localStorage.setItem('token', data.token)
-      console.log('redirection at home')
+    const isSuccedLogin = await login(email, password)
+    if (isSuccedLogin) {
       navigate('/home')
-    } catch (error) {
-      console.log(error)
-      toast.error('Password o/y gmail invalid')
+      return
     }
+
+    toast.error('Password o/y gmail invalid')
   }
   return (
     <div className=' bg-gradient-dark flex items-center justify-center p-4'>
