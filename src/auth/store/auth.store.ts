@@ -2,17 +2,22 @@ import { loginAction } from '@/actions'
 import type { User } from '@/types'
 import { create } from 'zustand'
 
+type AuthStatus = 'authenticated' | 'not-authenticated' | 'checking'
+
 type AuthState = {
   //Properties
   user: User | null
   token: string | null
+  authSatus: AuthStatus
   //Actions
   login: (email: string, password: string) => Promise<boolean>
+  logout: () => void
 }
 
 export const useAuthStore = create<AuthState>()((set) => ({
   user: null,
   token: null,
+  authSatus: 'checking',
   //Actions
   login: async (email: string, password: string) => {
     try {
@@ -34,5 +39,12 @@ export const useAuthStore = create<AuthState>()((set) => ({
       })
       return false
     }
+  },
+  logout: () => {
+    localStorage.removeItem('token')
+    set({
+      user: null,
+      token: null,
+    })
   },
 }))
