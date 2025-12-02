@@ -1,3 +1,4 @@
+import type { AuthResponse } from '@/types'
 import { api } from './api.base'
 
 interface LoginOptions {
@@ -12,7 +13,7 @@ interface RegisterOptions {
 
 export const authApi = {
   login: ({ email, password }: LoginOptions) =>
-    api.post('/auth/login', { email, password }),
+    api.post<AuthResponse>('/auth/login', { email, password }),
 
   register: ({ name, email, password }: RegisterOptions) =>
     api.post('/auth/register', { name, email, password }),

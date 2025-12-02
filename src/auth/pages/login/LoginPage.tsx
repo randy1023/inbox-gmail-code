@@ -1,18 +1,30 @@
-import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import { loginAction } from '@/actions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { useNavigate } from 'react-router'
+import { toast } from 'sonner'
 
 export const LoginPages = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const navigate = useNavigate()
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     // Tu lógica de login aquí
-    navigate('/home', {})
+
+    const formData = new FormData(e.target as HTMLFormElement)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+
+    try {
+      const data = await loginAction(email, password)
+
+      localStorage.setItem('token', data.token)
+      console.log('redirection at home')
+      navigate('/home')
+    } catch (error) {
+      console.log(error)
+      toast.error('Password o/y gmail invalid')
+    }
   }
   return (
     <div className=' bg-gradient-dark flex items-center justify-center p-4'>
@@ -29,9 +41,8 @@ export const LoginPages = () => {
               <Input
                 id='email'
                 type='email'
+                name='email'
                 placeholder='tu@email.com'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -40,9 +51,8 @@ export const LoginPages = () => {
               <Input
                 id='password'
                 type='password'
-                placeholder='••••••••'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name='password'
+                placeholder='password'
                 required
               />
             </div>
