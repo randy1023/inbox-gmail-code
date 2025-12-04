@@ -5,16 +5,16 @@ interface HeaderSectionProps {
   children: React.ReactNode
 }
 export const HeaderSection = ({ children }: HeaderSectionProps) => {
-  const { token, logout } = useAuthStore()
+  const { authSatus, isAdmin, logout } = useAuthStore()
 
   return (
     <>
-      {token && (
+      {authSatus === 'authenticated' && (
         <div className='w-full p-4 flex justify-end gap-2'>
           <Button variant='destructive' onClick={logout}>
             Cerrar sesion
           </Button>
-          <Button variant='outline'>Administrador</Button>
+          {isAdmin() && <Button variant='outline'>Administrador</Button>}
         </div>
       )}
       <section className='relative min-h-[40vh] flex flex-col items-center justify-center px-6 py-15'>
