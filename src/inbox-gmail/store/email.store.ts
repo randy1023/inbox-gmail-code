@@ -8,6 +8,8 @@ type EmailState = {
   emailsWithCode: GmailsReponse[]
   showAssingedEmails: boolean
   assignedEmailsfilter: string[]
+  showCodes: boolean
+  isLoading: boolean
 
   //Actions
   getEmails: (email: string) => Promise<boolean>
@@ -15,14 +17,28 @@ type EmailState = {
   setShowAssingedEmails: (isShow: boolean) => void
   handleSelectEmail: (selectedEmail: string) => void
   handleFilterAssignedEmail: (emails: string[], email: string) => void
+  setShowCodes: (isShow: boolean) => void
+  setIsLoading: (isLoading: boolean) => void
 }
 
-export const useEmailStore = create<EmailState>()((set) => ({
+export const useEmailStore = create<EmailState>()((set, get) => ({
   email: '',
   emailsWithCode: [],
   showAssingedEmails: false,
   assignedEmailsfilter: [],
+  showCodes: false,
+  isLoading: true,
   //Actions
+  setShowCodes: (isShow: boolean) => {
+    set({
+      showCodes: isShow,
+    })
+  },
+  setIsLoading: (isLoading: boolean) => {
+    set({
+      isLoading: isLoading,
+    })
+  },
   getEmails: async (email: string): Promise<boolean> => {
     try {
       const data = await getGmailsAction(email)
@@ -32,7 +48,12 @@ export const useEmailStore = create<EmailState>()((set) => ({
       return true
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      set({
+        emailsWithCode: [],
+      })
       return false
+    } finally {
+      get().setIsLoading(false)
     }
   },
   setEmail: (inputValue: string) => {

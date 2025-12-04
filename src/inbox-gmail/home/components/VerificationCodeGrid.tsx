@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import {
   Card,
   CardContent,
@@ -9,9 +8,9 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Copy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { getGmailsAction } from '@/actions'
 import type { GmailsReponse } from '@/types'
 import { CustomLoading } from '@/components/CustomLoading'
+import { useEmailStore } from '@/inbox-gmail/store/email.store'
 
 interface VerificationCodesGridProps {
   email: string
@@ -56,6 +55,7 @@ const formatDateWithAMPM = (dateString: string): string => {
   }).format(date)
 }
 export const VerificationCodeGrid = ({ email }: VerificationCodesGridProps) => {
+  const { emailsWithCode: gmails, isLoading } = useEmailStore()
   const handleCopyCode = (code: string, service: string) => {
     navigator.clipboard.writeText(code)
     console.log(service)
@@ -64,10 +64,7 @@ export const VerificationCodeGrid = ({ email }: VerificationCodesGridProps) => {
     //   description: `Código de ${service} copiado al portapapeles`,
     // });
   }
-  const { data: gmails, isLoading } = useQuery({
-    queryKey: ['gmails'],
-    queryFn: getGmailsAction,
-  })
+
   const enrichedGmails = gmails ? enrichGmailData(gmails) : []
   return (
     <section className='px-6 py-16'>

@@ -55,7 +55,7 @@ export const SelectInputGmail = () => {
       />
 
       {showAssingedEmails && user && assignedEmailsfilter.length > 0 && (
-        <div className='absolute z-50 w-full mt-1  border dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto'>
+        <div className='absolute z-50 w-full mt-1  border bg-background dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto'>
           {user?.assignedEmails.map((assignedEmail) => (
             <div
               key={assignedEmail}

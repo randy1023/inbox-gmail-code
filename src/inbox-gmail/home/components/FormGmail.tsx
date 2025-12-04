@@ -4,20 +4,31 @@ import { Button } from '../../../components/ui/button'
 import { SelectInputGmail } from './SelectInputGmail'
 import { useEmailStore } from '@/inbox-gmail/store/email.store'
 import { useAuthStore } from '@/auth/store/auth.store'
-interface FormaGmailProps {
-  onEmailSubmit: (email: string) => void
-}
-export const FormGmail = ({ onEmailSubmit }: FormaGmailProps) => {
-  const { user } = useAuthStore()
-  const { email } = useEmailStore()
+import { useQuery } from '@tanstack/react-query'
 
-  const handleSubmit = (e: React.FormEvent) => {
+export const FormGmail = () => {
+  const { user } = useAuthStore()
+  const { email, getEmails, setShowCodes } = useEmailStore()
+
+  const { refetch } = useQuery({
+    queryKey: ['emails'],
+    queryFn: () => getEmails(email),
+    enabled: false,
+    retry: 1,
+  })
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email || !user?.assignedEmails.includes(email)) {
       toast.error('Email seleccionado no valido. Selecciona un email asignado')
       return
     }
-    onEmailSubmit(email)
+    try {
+      await refetch()
+      setShowCodes(true)
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
     <form

@@ -5,9 +5,5 @@ interface GmailOptions {
 }
 export const gmailApi = {
   fetchEmails: ({ email }: GmailOptions) =>
-    api.get<GmailsReponse[]>('/gmail', {
-      data: {
-        email,
-      },
-    }),
+    api.post<GmailsReponse[]>('/gmail', { email }),
 }
