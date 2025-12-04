@@ -1,21 +1,20 @@
-import { Mail } from 'lucide-react'
-import { Input } from '../../../components/ui/input'
+import { toast } from 'sonner'
 import { Button } from '../../../components/ui/button'
-import { useState } from 'react'
+
+import { SelectInputGmail } from './SelectInputGmail'
+import { useEmailStore } from '@/inbox-gmail/store/email.store'
+import { useAuthStore } from '@/auth/store/auth.store'
 interface FormaGmailProps {
   onEmailSubmit: (email: string) => void
 }
 export const FormGmail = ({ onEmailSubmit }: FormaGmailProps) => {
-  const [email, setEmail] = useState('')
+  const { user } = useAuthStore()
+  const { email } = useEmailStore()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email) {
-      //   toast({
-      //     title: "Error",
-      //     description: "Por favor ingresa un correo electrónico",
-      //     variant: "destructive",
-      //   });
+    if (!email || !user?.assignedEmails.includes(email)) {
+      toast.error('Email seleccionado no valido. Selecciona un email asignado')
       return
     }
     onEmailSubmit(email)
@@ -26,14 +25,7 @@ export const FormGmail = ({ onEmailSubmit }: FormaGmailProps) => {
       className='flex flex-col sm:flex-row gap-3 max-w-md mx-auto'
     >
       <div className='relative flex-1'>
-        <Mail className='absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground' />
-        <Input
-          type='email'
-          placeholder='tu@email.com'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className='pl-10 h-12 bg-card border-border  text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all'
-        />
+        <SelectInputGmail />
       </div>
       <Button
         type='submit'

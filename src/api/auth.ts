@@ -17,4 +17,5 @@ export const authApi = {
 
   register: ({ name, email, password }: RegisterOptions) =>
     api.post('/auth/register', { name, email, password }),
+  checkAuthStatus: () => api.get<AuthResponse>('/auth/check-status'),
 }

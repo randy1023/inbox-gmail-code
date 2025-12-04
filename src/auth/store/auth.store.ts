@@ -1,4 +1,4 @@
-import { loginAction } from '@/actions'
+import { checkAuthAction, loginAction } from '@/actions'
 import type { User } from '@/types'
 import { create } from 'zustand'
 
@@ -12,6 +12,7 @@ type AuthState = {
   //Actions
   login: (email: string, password: string) => Promise<boolean>
   logout: () => void
+  checkAuthStatus: () => Promise<boolean>
 }
 
 export const useAuthStore = create<AuthState>()((set) => ({
@@ -27,15 +28,17 @@ export const useAuthStore = create<AuthState>()((set) => ({
       set({
         user: data.user,
         token: data.token,
+        authSatus: 'authenticated',
       })
-      console.log({ email, password })
+
       return true
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.log(error)
       localStorage.removeItem('token')
       set({
         user: null,
         token: null,
+        authSatus: 'not-authenticated',
       })
       return false
     }
@@ -45,6 +48,29 @@ export const useAuthStore = create<AuthState>()((set) => ({
     set({
       user: null,
       token: null,
+      authSatus: 'not-authenticated',
     })
+  },
+  checkAuthStatus: async () => {
+    try {
+      const { user, token } = await checkAuthAction()
+
+      set({
+        user,
+        token,
+        authSatus: 'authenticated',
+      })
+      localStorage.setItem('token', token)
+      return true
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      localStorage.removeItem('token')
+      set({
+        user: null,
+        token: null,
+        authSatus: 'not-authenticated',
+      })
+      return false
+    }
   },
 }))
