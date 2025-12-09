@@ -21,13 +21,13 @@ type EmailState = {
   setIsLoading: (isLoading: boolean) => void
 }
 
-export const useEmailStore = create<EmailState>()((set, get) => ({
+export const useEmailStore = create<EmailState>()((set) => ({
   email: '',
   emailsWithCode: [],
   showAssingedEmails: false,
   assignedEmailsfilter: [],
   showCodes: false,
-  isLoading: true,
+  isLoading: false,
   //Actions
   setShowCodes: (isShow: boolean) => {
     set({
@@ -42,6 +42,7 @@ export const useEmailStore = create<EmailState>()((set, get) => ({
   getEmails: async (email: string): Promise<boolean> => {
     try {
       const data = await getGmailsAction(email)
+      console.log({ Getema: data })
       set({
         emailsWithCode: data,
       })
@@ -52,8 +53,6 @@ export const useEmailStore = create<EmailState>()((set, get) => ({
         emailsWithCode: [],
       })
       return false
-    } finally {
-      get().setIsLoading(false)
     }
   },
   setEmail: (inputValue: string) => {
@@ -72,7 +71,7 @@ export const useEmailStore = create<EmailState>()((set, get) => ({
     console.log(selectedEmail)
     set({
       email: selectedEmail,
-      showAssingedEmails: true,
+      showAssingedEmails: false,
     })
   },
   handleFilterAssignedEmail: (emails: string[], email: string) => {

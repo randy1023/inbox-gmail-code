@@ -10,6 +10,8 @@ import { Copy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { GmailsReponse } from '@/types'
 import { CustomLoading } from '@/components/CustomLoading'
+import { toast } from 'sonner'
+import { useFetchGmailsByEmail } from '@/inbox-gmail/hooks/useFetchGmailsByEmail'
 import { useEmailStore } from '@/inbox-gmail/store/email.store'
 
 interface VerificationCodesGridProps {
@@ -55,14 +57,15 @@ const formatDateWithAMPM = (dateString: string): string => {
   }).format(date)
 }
 export const VerificationCodeGrid = ({ email }: VerificationCodesGridProps) => {
-  const { emailsWithCode: gmails, isLoading } = useEmailStore()
+  const { useQueryGmail } = useFetchGmailsByEmail()
+  const { emailsWithCode: gmails } = useEmailStore()
+
   const handleCopyCode = (code: string, service: string) => {
     navigator.clipboard.writeText(code)
-    console.log(service)
-    // toast({
-    //   title: "Código copiado",
-    //   description: `Código de ${service} copiado al portapapeles`,
-    // });
+
+    toast.info('Código copiado', {
+      description: `Código de ${service} copiado al portapapeles`,
+    })
   }
 
   const enrichedGmails = gmails ? enrichGmailData(gmails) : []
@@ -78,7 +81,7 @@ export const VerificationCodeGrid = ({ email }: VerificationCodesGridProps) => {
             <span className='text-primary font-semibold'>{email}</span>
           </p>
         </div>
-        {isLoading ? (
+        {useQueryGmail.isFetching ? (
           <CustomLoading />
         ) : (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>

@@ -1,38 +1,30 @@
-import { toast } from 'sonner'
+import { useAuthStore } from '@/auth/store/auth.store'
 import { Button } from '../../../components/ui/button'
-
 import { SelectInputGmail } from './SelectInputGmail'
 import { useEmailStore } from '@/inbox-gmail/store/email.store'
-import { useAuthStore } from '@/auth/store/auth.store'
-import { useQuery } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { useFetchGmailsByEmail } from '@/inbox-gmail/hooks/useFetchGmailsByEmail'
 
 export const FormGmail = () => {
   const { user } = useAuthStore()
-  const { email, getEmails, setShowCodes } = useEmailStore()
-
-  const { refetch } = useQuery({
-    queryKey: ['emails'],
-    queryFn: () => getEmails(email),
-    enabled: false,
-    retry: 1,
-  })
-
+  const { useQueryGmail } = useFetchGmailsByEmail()
+  const { email, handleSelectEmail, setShowCodes } = useEmailStore()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
     if (!email || !user?.assignedEmails.includes(email)) {
       toast.error('Email seleccionado no valido. Selecciona un email asignado')
       return
     }
-    try {
-      await refetch()
-      setShowCodes(true)
-    } catch (error) {
-      console.log(error)
-    }
+    handleSelectEmail(email)
+    setShowCodes(true)
   }
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={async (e) => {
+        handleSubmit(e)
+        await useQueryGmail.refetch()
+      }}
       className='flex flex-col sm:flex-row gap-3 max-w-md mx-auto'
     >
       <div className='relative flex-1'>
