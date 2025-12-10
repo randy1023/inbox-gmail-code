@@ -2,7 +2,12 @@ import { createBrowserRouter } from 'react-router'
 import { HomePage, InboxGmailLayout } from '../inbox-gmail'
 import { AuthLayout, LoginPages } from '@/auth'
 import { HeaderSection } from '@/components/HeaderSection'
-import { AuthenticatedRoute } from '@/components/routes/ProtectedRoutes'
+import {
+  AdminRoute,
+  AuthenticatedRoute,
+} from '@/components/routes/ProtectedRoutes'
+import { AdminLayout } from '@/admin/layouts/AdminLayouts'
+import AdminUsers from '@/admin/pages/AdminUser'
 export const appRouter = createBrowserRouter([
   {
     path: '/',
@@ -35,6 +40,22 @@ export const appRouter = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+    ],
+  },
+
+  {
+    path: '/admin',
+
+    element: (
+      <AdminRoute>
+        <AdminLayout />
+      </AdminRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <AdminUsers />,
       },
     ],
   },

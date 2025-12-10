@@ -1,5 +1,7 @@
 import { useAuthStore } from '@/auth/store/auth.store'
 import { Button } from './ui/button'
+import { Link } from 'react-router'
+import { Shield } from 'lucide-react'
 
 interface HeaderSectionProps {
   children: React.ReactNode
@@ -14,7 +16,14 @@ export const HeaderSection = ({ children }: HeaderSectionProps) => {
           <Button variant='destructive' onClick={logout}>
             Cerrar sesion
           </Button>
-          {isAdmin() && <Button variant='outline'>Administrador</Button>}
+          {isAdmin() && (
+            <Link to='/admin'>
+              <Button variant='outline' size='sm' className='gap-2'>
+                <Shield className='w-4 h-4' />
+                Administrador
+              </Button>
+            </Link>
+          )}
         </div>
       )}
       <section className='relative min-h-[40vh] flex flex-col items-center justify-center px-6 py-15'>

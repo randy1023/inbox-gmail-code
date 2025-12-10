@@ -25,7 +25,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   // getters
   isAdmin: () => {
     const roles = get().user?.role || []
-    return roles.includes('ADMIN_ROLE')
+    return roles.some((role) => role === 'ADMIN_ROLE')
   },
   //Actions
   login: async (email: string, password: string) => {
