@@ -9,8 +9,21 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Edit, Trash2, Users } from 'lucide-react'
+import {
+  Edit,
+  Trash2,
+  Users,
+  Download,
+  Upload,
+  MoreVertical,
+} from 'lucide-react'
 import { useUsersStore } from '../store/users.store'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 interface UsersTableProps {
   selectedUserId: string | null
@@ -42,6 +55,37 @@ export const UsersTable = ({
           <Users className='w-5 h-5 text-primary' />
           Lista de Usuarios
         </CardTitle>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant='outline' size='sm' className='gap-2'>
+              <MoreVertical className='w-4 h-4' />
+              Opciones
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align='end' className='bg-popover border-border'>
+            <DropdownMenuItem
+              onClick={() => {}}
+              className='gap-2 cursor-pointer'
+            >
+              <Upload className='w-4 h-4' />
+              Importar CSV
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {}}
+              className='gap-2 cursor-pointer'
+            >
+              <Download className='w-4 h-4' />
+              Exportar CSV
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <input
+          // ref={}
+          type='file'
+          accept='.csv'
+          onChange={() => {}}
+          className='hidden'
+        />
       </CardHeader>
       <CardContent className='p-0'>
         <Table>
