@@ -2,27 +2,18 @@ import type { User } from '@/types'
 import { UsersTable } from './../components/UserTables'
 import { UserForm } from './../components/UserFomr'
 import { UserRegistrationForm } from './../components/UserRegistrationForm'
-
 import { ArrowLeft, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useNavigate } from 'react-router'
-import { useQuery } from '@tanstack/react-query'
-//import { useUsersStore } from '../store/users.store'
 import { CustomLoading } from '@/components/CustomLoading'
-import { useStreamingCredentialStore } from '../store/streaming-credential.store'
 import { PaginationStreamingCredentials } from '../components/PaginationStreamingCredentials'
-import { getStreamingCredentialsAction } from '@/actions'
+import { useGetStreamingCredentials } from '../hooks'
 
 const AdminUsers = () => {
   const navigate = useNavigate()
-  // const { getAllUsers } = useUsersStore()
-  const { page, limit } = useStreamingCredentialStore()
-  const { isLoading, data: streamingCredentials } = useQuery({
-    queryKey: ['streaming-credentials', 'page', page],
-    queryFn: () => getStreamingCredentialsAction(limit, page),
-    staleTime: 1000 * 60 * 60,
-  })
+  const { isFetchingCredentials, streamingCredentials } =
+    useGetStreamingCredentials()
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDeleteUser = (userId: string) => {
@@ -74,7 +65,7 @@ const AdminUsers = () => {
 
         {/* Content Grid */}
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-          {isLoading ? (
+          {isFetchingCredentials ? (
             <CustomLoading />
           ) : (
             <div className='lg:col-span-2'>
