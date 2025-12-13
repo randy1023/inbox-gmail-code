@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router'
 import { CustomLoading } from '@/components/CustomLoading'
 import { PaginationStreamingCredentials } from '../components/PaginationStreamingCredentials'
 import { useGetStreamingCredentials } from '../hooks'
+import { FiltersPanel } from '../components/FilterPanel'
 
 const AdminUsers = () => {
   const navigate = useNavigate()
@@ -61,6 +62,10 @@ const AdminUsers = () => {
               </p>
             </div>
           </div>
+        </div>
+        {/* Filters Panel */}
+        <div className='mb-6'>
+          <FiltersPanel />
         </div>
 
         {/* Content Grid */}

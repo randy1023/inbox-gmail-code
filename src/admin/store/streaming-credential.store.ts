@@ -23,6 +23,7 @@ type StreamingCredentialState = {
   formData: FormData
   page: number
   limit: number
+  service: string
   //getters
 
   //Actions
@@ -36,6 +37,7 @@ type StreamingCredentialState = {
   handleCancel: () => void
   setPage: (page: number) => void
   setLimit: (limit: number) => void
+  setService: (service: string) => void
 }
 
 export const useStreamingCredentialStore = create<StreamingCredentialState>()(
@@ -46,6 +48,7 @@ export const useStreamingCredentialStore = create<StreamingCredentialState>()(
     formData: initialFormData,
     page: 1,
     limit: 10,
+    service: 'ALL',
     // getters
 
     //Actions
@@ -54,6 +57,9 @@ export const useStreamingCredentialStore = create<StreamingCredentialState>()(
     },
     setLimit: (limit: number) => {
       set({ limit })
+    },
+    setService: (service: string) => {
+      set({ service })
     },
 
     createStreamingCredential: async (

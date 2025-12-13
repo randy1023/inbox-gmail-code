@@ -49,6 +49,7 @@ export const UsersTable = ({
             <Users className='w-5 h-5 text-primary' />
             Lista de Usuarios
           </CardTitle>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -147,7 +148,7 @@ export const UsersTable = ({
                       size='icon'
                       onClick={(e) => {
                         e.stopPropagation()
-                        //  handleSelectedUser(credential)
+                        handleSelectedStreamingCredential(credential)
                       }}
                       className='h-8 w-8 text-primary hover:text-primary hover:bg-primary/20'
                     >
