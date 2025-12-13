@@ -10,7 +10,9 @@ export const csvApi = {
       },
     })
   },
-  exportCsv: () => {
-    api.get('/csv/export', { responseType: 'blob' })
-  },
+  exportCsv: async () =>
+    api.get<Blob>('/csv/export', {
+      responseType: 'blob',
+      headers: { Accept: 'text/csv' },
+    }),
 }

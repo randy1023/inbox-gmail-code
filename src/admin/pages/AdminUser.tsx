@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import type { User } from '@/types'
 import { UsersTable } from './../components/UserTables'
 import { UserForm } from './../components/UserFomr'
@@ -9,31 +8,21 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useNavigate } from 'react-router'
 import { useQuery } from '@tanstack/react-query'
-import { useUsersStore } from '../store/users.store'
+//import { useUsersStore } from '../store/users.store'
 import { CustomLoading } from '@/components/CustomLoading'
+import { useStreamingCredentialStore } from '../store/streaming-credential.store'
+import { PaginationStreamingCredentials } from '../components/PaginationStreamingCredentials'
+import { getStreamingCredentialsAction } from '@/actions'
 
 const AdminUsers = () => {
   const navigate = useNavigate()
-  const { getAllUsers } = useUsersStore()
-
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
-
-  const { isLoading } = useQuery({
-    queryKey: ['users'],
-    queryFn: getAllUsers,
+  // const { getAllUsers } = useUsersStore()
+  const { page, limit } = useStreamingCredentialStore()
+  const { isLoading, data: streamingCredentials } = useQuery({
+    queryKey: ['streaming-credentials', 'page', page],
+    queryFn: () => getStreamingCredentialsAction(limit, page),
+    staleTime: 1000 * 60 * 60,
   })
-
-  // const handleSelectUser = (user: User) => {
-  //   setSelectedUser(user)
-  // }
-
-  // const handleSaveUser = (updatedUser: User) => {
-  //   setUsers((prev) =>
-  //     prev.map((u) => (u.id === updatedUser.id ? updatedUser : u))
-  //   )
-  //   setSelectedUser(null)
-  //   toast.success('Usuario actualizado correctamente')
-  // }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDeleteUser = (userId: string) => {
@@ -53,10 +42,6 @@ const AdminUsers = () => {
     console.log(newUser)
     // setUsers((prev) => [newUser, ...prev])
     // toast.success('Usuario registrado correctamente')
-  }
-
-  const handleCancel = () => {
-    setSelectedUser(null)
   }
 
   return (
@@ -94,11 +79,17 @@ const AdminUsers = () => {
           ) : (
             <div className='lg:col-span-2'>
               <UsersTable
-                selectedUserId={selectedUser?.id ?? null}
+                streamingCredentials={streamingCredentials}
                 onDeleteUser={handleDeleteUser}
               />
+              <div className='py-8'>
+                <PaginationStreamingCredentials
+                  totalPages={streamingCredentials?.totalPages ?? 0}
+                />
+              </div>
             </div>
           )}
+
           <div className='lg:col-span-1'>
             <Tabs defaultValue='edit' className='w-full'>
               <TabsList className='grid w-full grid-cols-2 mb-4'>
@@ -106,7 +97,7 @@ const AdminUsers = () => {
                 <TabsTrigger value='register'>Registrar</TabsTrigger>
               </TabsList>
               <TabsContent value='edit'>
-                <UserForm onCancel={handleCancel} />
+                <UserForm />
               </TabsContent>
               <TabsContent value='register'>
                 <UserRegistrationForm onRegister={handleRegisterUser} />
